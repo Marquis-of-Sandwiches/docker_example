@@ -1,0 +1,34 @@
+#Everything from here https://docs.docker.com/engine/install/debian/
+#I su to root.
+apt  install ca-certificates curl gnupg keychain.. Already installed for me
+#Configure keychain for ssh auth to github
+#generate rsa key if one isn't already present.
+#ssh auth default looks for id_rsa and other default crypto variations. Pay attention to your keys!
+#add this to .bashrc: eval $(keychain --eval github_rsa)  I symlinked it to id_rsa and it seems to work.
+
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
+apt install docker-ce
+#minikube uses kvm/qemu
+systemctl disable docker
+#add your local user to the docker group. logout, login 
+create directory to do image build
+mkdir ~/docker-build
+mv /from/some/path/Dockerfile ~/docker-build
+cd ~/docker-build  
+docker build -t mp-prometheus:1.0 .  #Internet seems split on storing big binaries in git.  Possible with a longer incantation.
+docker images #checks if it's there
+docker tag $IMAGE_HASH  docker.pkg.github.com/marquis-of-sandwiches/docker_example/mp-prometheus:v1.0
+#configure github
+#everything from here https://blog.hildenco.com/2020/09/hosting-docker-images-on-github.html
+#generate token under github account options, not repo options
+docker login https://docker.pkg./github.com -u marquis-of-sandwiches --password ghp_super_secret_token
+docker push docker.pkg.github.com/marquis-of-sandwiches/docker_example/mp-prometheus:v1.0
+#Image is ready for use by helm!
+
