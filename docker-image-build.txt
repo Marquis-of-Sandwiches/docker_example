@@ -22,8 +22,9 @@ create directory to do image build
 mkdir ~/docker-build
 mv /from/some/path/Dockerfile ~/docker-build
 cd ~/docker-build  
-docker build -t mp-prometheus:1.0 .  #Internet seems split on storing big binaries in git.  Possible with a longer incantation.
+docker build -t ghcr.io/marquis-of-sandwiches/mp-prometheus:1.0 .  #Internet seems split on storing big binaries in git.  Possible with a longer incantation.
 docker images #checks if it's there
+#the rest is from here: https://blog.hildenco.com/2020/09/hosting-docker-images-on-github.html
 docker tag $IMAGE_HASH  docker.pkg.github.com/marquis-of-sandwiches/docker_example/mp-prometheus:v1.0
 #configure github
 #everything from here https://blog.hildenco.com/2020/09/hosting-docker-images-on-github.html
